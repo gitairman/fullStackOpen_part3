@@ -106,14 +106,22 @@ app.put('/api/persons/:id', (req, res, next) => {
     const options = { new: true, runValidators: true, context: 'query' }
 
     Person.findByIdAndUpdate(req.params.id, req.body, options)
-        .then(updatedPerson => res.json(updatedPerson))
-        .catch(error => next(error))
+        .then(updatedPerson => {
+            res.json(updatedPerson)
+        })
+        .catch(error => {
+            next(error)
+        })
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
     Person.findByIdAndDelete(req.params.id)
-        .then(result => res.send(result))
-        .catch(error => next(error))
+        .then(result => {
+            res.send(result)
+        })
+        .catch(error => {
+            next(error)
+        })
 })
 
 app.use(unknownEndpoint)
