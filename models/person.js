@@ -14,7 +14,6 @@ const personSchema = new mongoose.Schema({
     name: {
         type: String,
         minLength: [5, 'name must be at least 5 characters!'],
-        maxLength: [10, 'name must be at most 10 characters!'],
         required: true
     },
     number: {
