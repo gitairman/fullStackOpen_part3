@@ -53,19 +53,29 @@ app.use(cors())
 //     return id
 // }
 
-app.get('/api/persons', (req, res) => {
+const errorHandler = (error, req, res, next) => {
+    console.log(error.message)
+
+    next(error)
+}
+
+const unknownEndpoint = (req, res) => {
+    res.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.get('/api/persons', (req, res, next) => {
     Person.find()
         .then(persons => res.json(persons))
-        .catch(error => console.log(error.message))
+        .catch(error => next(error))
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
     Person.findById(req.params.id)
         .then(person => res.json(person))
-        .catch(error => console.log(error.message))
+        .catch(error => next(error))
 })
 
-app.post('/api/persons', assignData, (req, res) => {
+app.post('/api/persons', assignData, (req, res, next) => {
     const newPerson = req.body
 
     if (newPerson.name && newPerson.number) {
@@ -75,18 +85,28 @@ app.post('/api/persons', assignData, (req, res) => {
         })
 
         person.save().then(savedPerson => {
-            console.log(savedPerson)
-            return res.json(savedPerson)
+            res.json(savedPerson)
         })
+            .catch(error => next(error))
+    } else {
+        res.status(400).send('New entry NOT added. Name or number is missing.')
     }
-    res.status(400).send('New entry NOT added. Name or number is missing.')
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.put('/api/persons/:id', (req, res, next) => {
+    Person.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        .then(updatedPerson => res.json(updatedPerson))
+        .catch(error => next(error))
+})
+
+app.delete('/api/persons/:id', (req, res, next) => {
     Person.findByIdAndDelete(req.params.id)
         .then(result => res.send(result))
-        .catch(error => console.log(error.message))
+        .catch(error => next(error))
 })
+
+app.use(unknownEndpoint)
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
