@@ -11,8 +11,17 @@ mongoose.connect(url, { dbName: 'phonebook' })
     .catch(error => console.log('error connecting to MongoDB:', error.message))
 
 const personSchema = new mongoose.Schema({
-    name: String,
-    number: String,
+    name: {
+        type: String,
+        minLength: [5, 'name must be at least 5 characters!'],
+        maxLength: [10, 'name must be at most 10 characters!'],
+        required: true
+    },
+    number: {
+        type: String,
+        match: [/([0-9]{2,3})-([0-9]{7,8})/, 'number must be in format 01-23456789 or 012-3456789!'],
+        required: true
+    }
 }, { versionKey: false })
 
 personSchema.set('toJSON', {
