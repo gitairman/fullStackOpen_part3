@@ -19,7 +19,7 @@ const personSchema = new mongoose.Schema({
     },
     number: {
         type: String,
-        match: [/([0-9]{2,3})-([0-9]{7,8})/, 'number must be in format 01-23456789 or 012-3456789!'],
+        match: [/\d{2,3}-\d{7,8}/, 'number must be in format 01-23456789 or 012-3456789!'],
         required: true
     }
 }, { versionKey: false })
