@@ -82,7 +82,7 @@ app.post('/api/persons', assignData, (req, res) => {
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-    Person.deleteOne({ id: req.params.id })
+    Person.deleteOne({ _id: req.params.id })
         .then(result => res.send(result))
         .catch(error => console.log(error.message))
 })
