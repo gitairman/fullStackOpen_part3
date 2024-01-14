@@ -13,7 +13,7 @@ mongoose.connect(url, { dbName: 'phonebook' })
 const personSchema = new mongoose.Schema({
     name: String,
     number: String,
-})
+}, { versionKey: false })
 
 personSchema.set('toJSON', {
     transform: (document, returnedObj) => {
