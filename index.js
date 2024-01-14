@@ -75,6 +75,7 @@ app.post('/api/persons', assignData, (req, res) => {
         })
 
         person.save().then(savedPerson => {
+            console.log(savedPerson)
             return res.json(savedPerson)
         })
     }
@@ -82,7 +83,7 @@ app.post('/api/persons', assignData, (req, res) => {
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-    Person.deleteOne({ _id: req.params.id })
+    Person.findByIdAndDelete(req.params.id)
         .then(result => res.send(result))
         .catch(error => console.log(error.message))
 })
