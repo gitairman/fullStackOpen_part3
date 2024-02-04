@@ -13,12 +13,13 @@ mongoose.connect(url, { dbName: 'phonebook' })
 const personSchema = new mongoose.Schema({
   name: {
     type: String,
-    minLength: [5, 'name must be at least 5 characters!'],
+    minLength: [5, 'must be at least 5 characters!'],
+    match: [/(^[A-Za-z]{3,16})([ ]{0,1})([A-Za-z]{3,16})/, 'must include a first name and last name separated by a space'],
     required: true
   },
   number: {
     type: String,
-    match: [/\d{2,3}-\d{7,8}/, 'number must be in format 01-23456789 or 012-3456789!'],
+    match: [/\d{2,3}-\d{7,8}/, 'must be in format 01-23456789 or 012-3456789!'],
     required: true
   }
 }, { versionKey: false })
