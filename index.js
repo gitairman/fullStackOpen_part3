@@ -16,7 +16,9 @@ const assignData = (req, res, next) => {
 }
 
 app.use(express.static('dist'))
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
+app.use(
+  morgan(':method :url :status :res[content-length] - :response-time ms :data')
+)
 app.use(express.json())
 app.use(cors())
 
@@ -58,7 +60,6 @@ const errorHandler = (error, req, res, next) => {
 
   if (error.name === 'CastError') {
     return res.status(400).send('malformatted id')
-
   } else if (error.name === 'ValidationError') {
     return res.status(400).send(error.message)
   } else if (error.name === 'DocumentNotFoundError') {
@@ -74,14 +75,14 @@ const unknownEndpoint = (req, res) => {
 
 app.get('/api/persons', (req, res, next) => {
   Person.find()
-    .then(persons => res.json(persons))
-    .catch(error => next(error))
+    .then((persons) => res.json(persons))
+    .catch((error) => next(error))
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
   Person.findById(req.params.id)
-    .then(person => res.json(person))
-    .catch(error => next(error))
+    .then((person) => res.json(person))
+    .catch((error) => next(error))
 })
 
 app.post('/api/persons', assignData, (req, res, next) => {
@@ -90,13 +91,17 @@ app.post('/api/persons', assignData, (req, res, next) => {
   if (newPerson.name && newPerson.number) {
     const person = new Person({
       name: newPerson.name,
-      number: newPerson.number
+      number: newPerson.number,
+      email: newPerson.email,
+      addedBy: newPerson.addedBy,
     })
 
-    person.save().then(savedPerson => {
-      res.json(savedPerson)
-    })
-      .catch(error => next(error))
+    person
+      .save()
+      .then((savedPerson) => {
+        res.json(savedPerson)
+      })
+      .catch((error) => next(error))
   } else {
     res.status(400).send('New entry NOT added. Name or number is missing.')
   }
@@ -106,20 +111,20 @@ app.put('/api/persons/:id', (req, res, next) => {
   const options = { new: true, runValidators: true, context: 'query' }
 
   Person.findByIdAndUpdate(req.params.id, req.body, options)
-    .then(updatedPerson => {
+    .then((updatedPerson) => {
       res.json(updatedPerson)
     })
-    .catch(error => {
+    .catch((error) => {
       next(error)
     })
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndDelete(req.params.id)
-    .then(result => {
+    .then((result) => {
       res.send(result)
     })
-    .catch(error => {
+    .catch((error) => {
       next(error)
     })
 })
